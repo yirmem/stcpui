@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:stcpui.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="stcpui.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        xmlns:local="clr-namespace:stcpui.Views"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="stcpui">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+    
+    <TabControl Margin="5">
+        <TabItem Header="ModbusClient">
+            <local:ModbusClient></local:ModbusClient>
+        </TabItem>
+        <TabItem Header="TcpClient">
+            <TextBlock Margin="5" Text="这里是首页的内容" />
+        </TabItem>
+        <TabItem Header="关于">
+            <Button Content="点击我" Margin="20" />
+        </TabItem>
+    </TabControl>
+    
+
+</Window>
