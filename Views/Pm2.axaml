@@ -70,7 +70,7 @@
                 技巧：使用 $parent[TopLevel] 获取当前窗口的顶层引用 
                 这样就可以在 ViewModel 中调用 StorageProvider 而不需要在 CodeBehind 写逻辑
             -->
-            <Button Content="选择文件..."
+            <Button Content="选择程序启动..."
                     Command="{Binding SelectFileCommand}"
                     CommandParameter="{Binding $parent[TopLevel]}"/>
             

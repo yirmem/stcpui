@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -93,8 +95,35 @@ public partial class Pm2ViewModel:ViewModelBase
     public void ViewLog(Pm2App app)
     {
         ConsoleOutput = $"正在查看 ID:{app.Id} ({app.Name}) 的日志...";
-        // 这里可以弹出一个新窗口或者 Dialog 显示日志
+    
+        try
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                // Windows 方案保持不变
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c pm2 logs {app.Id}",
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                };
+    
+                Process.Start(startInfo);
+                ConsoleOutput += "\nCMD 已启动，正在显示日志...";
+            }
+            else
+            {
+                ConsoleOutput = "错误：当前操作系统不支持，仅支持 Windows。";
+            }
+        }
+        catch (Exception ex)
+        {
+            ConsoleOutput = $"错误：无法启动终端进程 - {ex.Message}";
+        }
     }
+    
+    
 
     [RelayCommand]
     public async Task StopAppAsync(Pm2App app)
