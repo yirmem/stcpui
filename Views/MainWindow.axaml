@@ -8,13 +8,27 @@
         x:DataType="vm:MainWindowViewModel"
         xmlns:local="clr-namespace:stcpui.Views"
         Icon="/Assets/avalonia-logo.ico"
-        Title="stcpui">
+        Title="STcp 运维">
 
     <Design.DataContext>
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
     <TabControl Margin="5">
+        <TabControl.Styles>
+            <!-- 此样式会作用于该TabControl下的所有TabItem -->
+            <Style Selector="TabItem">
+                <!-- 显著减小内边距，使标签头更紧凑 -->
+                <Setter Property="Padding" Value="8,4"/>
+                <!-- 设置一个更小的最小高度 -->
+                <Setter Property="MinHeight" Value="28"/>
+                <!-- 可选：修改字体大小 -->
+                <Setter Property="FontSize" Value="20"/>
+            </Style>
+        </TabControl.Styles>
+        <TabItem Header="Pm2管理">
+            <local:Pm2></local:Pm2>
+        </TabItem>
         <TabItem Header="ModbusClient">
             <local:ModbusClient></local:ModbusClient>
         </TabItem>

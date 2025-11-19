@@ -1,0 +1,85 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:stcpui.ViewModels"
+             xmlns:models="clr-namespace:stcpui.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewModels:Pm2ViewModel"
+             x:Name="Pm2Control"
+             x:Class="stcpui.Views.Pm2">
+    
+    <Design.DataContext>
+        <viewModels:Pm2ViewModel/>
+    </Design.DataContext>
+    
+    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+        
+        <!-- 顶部操作区 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+            <Button Content="刷新列表" Command="{Binding RefreshListCommand}" />
+            <TextBlock Text="{Binding ConsoleOutput}" VerticalAlignment="Center" Foreground="Gray"/>
+        </StackPanel>
+
+        <!-- 中间表格 -->
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Apps}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1" BorderBrush="#E5E5E5">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" />
+                <DataGridTextColumn Header="应用名称" Binding="{Binding Name}" Width="*" />
+                <DataGridTextColumn Header="上次运行时间" Binding="{Binding UpTime}" Width="200" />
+                <DataGridTextColumn Header="CPU" Binding="{Binding Cpu}" Width="80" />
+                <DataGridTextColumn Header="内存" Binding="{Binding Memory}" Width="100" />
+                <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="100" />
+        
+                <!-- 操作列 -->
+                <DataGridTemplateColumn Header="操作" Width="250">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="models:Pm2App" >
+                            <StackPanel Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left" Margin="5,0">
+                                <!-- 注意：这里的 Command 需要绑定到父级 ViewModel -->
+                                <Button Content="日志"
+                                        Command="{Binding $parent[UserControl].((viewModels:Pm2ViewModel)DataContext).ViewLogCommand}"
+                                        CommandParameter="{Binding .}"/>
+        
+                                <Button Content="停止"
+                                        Command="{Binding $parent[UserControl].((viewModels:Pm2ViewModel)DataContext).StopAppCommand}"
+                                        CommandParameter="{Binding .}"/>
+        
+                                <Button Content="重启"
+                                        Command="{Binding $parent[UserControl].((viewModels:Pm2ViewModel)DataContext).RestartAppCommand}"
+                                        CommandParameter="{Binding .}"/>
+                                
+                                <Button Content="删除"
+                                        Command="{Binding $parent[UserControl].((viewModels:Pm2ViewModel)DataContext).DeleteAppCommand}"
+                                        CommandParameter="{Binding .}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- 底部文件选择 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
+            <!-- 
+                技巧：使用 $parent[TopLevel] 获取当前窗口的顶层引用 
+                这样就可以在 ViewModel 中调用 StorageProvider 而不需要在 CodeBehind 写逻辑
+            -->
+            <Button Content="选择文件..."
+                    Command="{Binding SelectFileCommand}"
+                    CommandParameter="{Binding $parent[TopLevel]}"/>
+            
+            <TextBox Text="{Binding SelectedFilePath}"
+                     IsReadOnly="True"
+                     Width="300"
+                     Watermark="未选择文件"/>
+        </StackPanel>
+        
+    </Grid>
+    
+</UserControl>

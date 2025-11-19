@@ -14,7 +14,7 @@ namespace stcpui;
 public partial class App : Application
 {
     public new static App Current => (App)Application.Current!;
-    public IServiceProvider Services { get; private set; }
+    public static IServiceProvider Services { get; private set; }
     
     public override void Initialize()
     {
@@ -22,8 +22,9 @@ public partial class App : Application
         // 初始化DI容器
         var serviceCollection = new ServiceCollection();
         // 注册ViewModel（如果需要由容器创建）
+        serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<ModbusClientViewModel>();
-        
+        serviceCollection.AddTransient<Pm2ViewModel>();
         // 构建ServiceProvider
         Services = serviceCollection.BuildServiceProvider();
     }
@@ -36,7 +37,7 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            var viewModel = Services.GetRequiredService<ModbusClientViewModel>();
+            var viewModel = Services.GetRequiredService<MainWindowViewModel>();
             desktop.MainWindow = new MainWindow
             {
                 //DataContext = new MainWindowViewModel(),
