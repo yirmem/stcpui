@@ -10,9 +10,9 @@ public class ModbusModel
 
     public int Port { get; set; } = 503;
 
-    public int DeviceAddress { get; set; } = 1;
+    public int? DeviceAddress { get; set; } = 1;
     public string StartAddress { get; set; } = "0000";
-    public int ReadLength { get; set; } = 10;
+    public ushort ReadLength { get; set; } = 10;
     
     public DateTime CreateTime { get; set; }
 }

@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:stcpui.ViewModels"
              xmlns:converters="clr-namespace:stcpui.Converters"
+             xmlns:sys="clr-namespace:System;assembly=System.Runtime"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="vm:ModbusClientViewModel"
              x:Class="stcpui.Views.ModbusClient">
@@ -41,7 +42,7 @@
                 <StackPanel>
                     <TextBlock Text="设备地址" FontWeight="SemiBold" Margin="0,0,0,4"/>
                     <TextBox Watermark="0-255" 
-                             Text="{Binding DeviceAddress}"/>
+                             Text="{Binding DeviceAddress,TargetNullValue={x:Static sys:String.Empty}}"/>
                 </StackPanel>
                 
                 <!-- 功能码下拉框 -->

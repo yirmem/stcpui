@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using stcpui.Models;
+using stcpui.Repository;
 using stcpui.Services;
 
 namespace stcpui.ViewModels;
@@ -20,7 +22,18 @@ public partial class ModbusClientViewModel:ViewModelBase
     private int _port = 504;
     
     [ObservableProperty]
-    private int _deviceAddress = 1;
+    private string? _deviceAddress = "1";
+    public int? DeviceAddressValue
+    {
+        get
+        {
+            if (int.TryParse(DeviceAddress, out int result))
+            {
+                return result;
+            }
+            return 1; // 或者一个默认值
+        }
+    }
     
     [ObservableProperty]
     private FunctionCodeItem _functionCode;
@@ -29,7 +42,19 @@ public partial class ModbusClientViewModel:ViewModelBase
     private string _startAddress = "0000";
     
     [ObservableProperty]
-    private ushort _readLength = 10;
+    private string? _readLength = "10";
+    
+    public ushort ReadLengthValue
+    {
+        get
+        {
+            if (ushort.TryParse(ReadLength, out ushort result))
+            {
+                return result;
+            }
+            return 10; // 或者一个默认值
+        }
+    }
     
     [ObservableProperty]
     private bool _isConnected = false;
@@ -54,16 +79,34 @@ public partial class ModbusClientViewModel:ViewModelBase
     public ObservableCollection<DataResultItem> DataResults { get; } = new();
    
     private readonly TcpService _tcpService;
+    private readonly IModbusRepository _modbusRepository;
     
-    public ModbusClientViewModel()
+    public ModbusClientViewModel(IModbusRepository modbusRepository)
     {
+        _modbusRepository = modbusRepository;
         // 设置默认功能码
         FunctionCode = FunctionCodes.First();
         _tcpService = new TcpService();
         // 订阅TCP服务的事件
         _tcpService.ConnectionStatusChanged += OnTcpServiceConnectionStatusChanged;
         _tcpService.DataReceived += OnTcpServiceDataReceived;
-        
+        LoadDataCommand.Execute(null);
+    }
+
+    private long _Id = 0;
+    [RelayCommand]
+    private async Task LoadDataAsync()
+    {
+        var modbusList = await _modbusRepository.GetAllAsync();
+        foreach (var modbusItem in modbusList)
+        {
+            IpAddress =  modbusItem.Ip;
+            Port =  modbusItem.Port;
+            StartAddress =  modbusItem.StartAddress;
+            ReadLength =  modbusItem.ReadLength+"";
+            DeviceAddress =  modbusItem.DeviceAddress+"";
+            _Id = modbusItem.Id;
+        }
     }
     
     [RelayCommand]
@@ -75,6 +118,21 @@ public partial class ModbusClientViewModel:ViewModelBase
         }
         else
         {
+            ModbusModel mc = new ModbusModel();
+            mc.Ip = IpAddress;
+            mc.Port = Port;
+            mc.ReadLength = ReadLengthValue;
+            mc.StartAddress = StartAddress;
+            mc.DeviceAddress = DeviceAddressValue;
+            if (_Id != 0)
+            {
+                mc.Id = _Id;
+                await _modbusRepository.UpdateAsync(mc);
+            }
+            else
+            {
+                await _modbusRepository.InsertAsync(mc);
+            }
             StatusMessage = "正在连接...";
             var success = await _tcpService.ConnectAsync(IpAddress, Port);
             // 连接结果会通过ConnectionStatusChanged事件更新IsConnected和StatusMessage
@@ -82,6 +140,7 @@ public partial class ModbusClientViewModel:ViewModelBase
             {
                 StatusMessage = "连接失败，请检查地址、端口及服务端状态";
             }
+            
         }
         
     }
@@ -122,14 +181,14 @@ public partial class ModbusClientViewModel:ViewModelBase
     public string BuildModbusRequestFrame()
     {
         // 1. 将各属性转换为字节
-        byte deviceAddressByte = (byte)_deviceAddress;
+        byte deviceAddressByte = (byte)DeviceAddressValue;
         byte functionCodeByte = Convert.ToByte(_functionCode.Code, 16); // 假设FunctionCodeItem有一个Code属性表示十六进制字符串
 
         // 起始地址和读取长度需要转换为2个字节（高位在前）
         ushort startAddressValue = ushort.Parse(_startAddress, System.Globalization.NumberStyles.HexNumber);
         byte[] startAddressBytes = new byte[] { (byte)(startAddressValue >> 8), (byte)startAddressValue };
 
-        ushort readLengthValue = _readLength;
+        ushort readLengthValue = ReadLengthValue;
         byte[] readLengthBytes = new byte[] { (byte)(readLengthValue >> 8), (byte)readLengthValue };
 
         // 2. 构建报文主体（不含CRC）
