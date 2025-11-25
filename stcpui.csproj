@@ -6,10 +6,11 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-<!--    <RuntimeIdentifiers>osx-x64;osx-arm64</RuntimeIdentifiers>-->
+    <RuntimeIdentifiers>osx-arm64</RuntimeIdentifiers>
     <SelfContained>true</SelfContained>            <!-- 包含.NET运行时 -->
     <PublishTrimmed>true</PublishTrimmed>          <!-- 裁剪未使用代码（可选，减少体积） -->
     <ApplicationIcon>Assets\avalonia-logo.ico</ApplicationIcon>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
     <!-- 输出的 .app 文件名 -->
     <CFBundleName>STcp</CFBundleName>
     <!-- 应用显示名称 -->
@@ -39,6 +40,5 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="3.0.2" />
-    <PackageReference Include="System.Data.SQLite" Version="2.0.2" />
   </ItemGroup>
 </Project>

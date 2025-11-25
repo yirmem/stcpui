@@ -1,5 +1,9 @@
 #!/bin/bash
 
+rm -rf "bin/Release/net9.0/osx-arm64/publish"
+
+dotnet publish -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true
+
 # Avalonia macOS 应用打包脚本
 # 使用方法：在项目根目录运行 ./package_mac_app.sh
 

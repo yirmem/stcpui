@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using stcpui.Models;
@@ -18,9 +19,15 @@ public class Pm2Service
             UseShellExecute = false,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
-            CreateNoWindow = true
+            CreateNoWindow = true,
         };
-
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            startInfo.EnvironmentVariables["PATH"] = "/usr/local/bin:" + Environment.GetEnvironmentVariable("PATH");
+            startInfo.WorkingDirectory = "/usr/local/bin";
+            startInfo.FileName = "/usr/local/bin/pm2";
+        }
+        
         using var process = new Process { StartInfo = startInfo };
         process.Start();
         

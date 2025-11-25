@@ -37,7 +37,7 @@ public partial class Pm2ViewModel:ViewModelBase
             // 模拟检查过程，实际请调用 cmd/bash 执行 "pm2 -v"
             // var version = await RunProcessAsync("pm2", "-v");
             
-            await Task.Delay(500); // 模拟耗时
+            //await Task.Delay(500); // 模拟耗时
             bool isInstalled = true; // 假设已安装
 
             if (isInstalled)

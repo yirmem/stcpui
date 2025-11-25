@@ -26,7 +26,7 @@
                 <Setter Property="FontSize" Value="20"/>
             </Style>
         </TabControl.Styles>
-        <TabItem Header="Pm2管理">
+        <TabItem Header="Pm2管理" >
             <local:Pm2></local:Pm2>
         </TabItem>
         <TabItem Header="ModbusClient">

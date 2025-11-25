@@ -1,14 +1,13 @@
 using System;
 using System.Data;
-using System.Data.SQLite;
+using System.IO;
+using Microsoft.Data.Sqlite;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
-using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Extensions.DependencyInjection;
-using stcpui.Helper;
 using stcpui.Repository;
 using stcpui.ViewModels;
 using stcpui.Views;
@@ -26,10 +25,13 @@ public partial class App : Application
         // 初始化DI容器
         var serviceCollection = new ServiceCollection();
         
+        string appDir = AppContext.BaseDirectory;
+        string dbPath = Path.Combine(appDir, "stcp.db");
+        
         // 注册数据库连接
         serviceCollection.AddScoped<IDbConnection>(provider => 
         {
-            var connection = new SQLiteConnection("Data Source=stcp.db;");
+            var connection = new SqliteConnection($"Data Source={dbPath};");
             connection.Open();
             // 创建用户表
             const string createUserTableSql = @"
