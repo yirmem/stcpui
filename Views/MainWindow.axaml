@@ -32,11 +32,18 @@
         <TabItem Header="ModbusClient">
             <local:ModbusClient></local:ModbusClient>
         </TabItem>
+        <TabItem Header="Win工具">
+            <local:WinTools></local:WinTools>
+        </TabItem>
         <TabItem Header="TcpClient">
-            <TextBlock Margin="5" Text="这里是首页的内容" />
+            <TextBlock Margin="5" Text="TcpClient待开发" />
         </TabItem>
         <TabItem Header="关于">
-            <Button Content="点击我" Margin="20" />
+            <StackPanel>
+                <TextBlock TextAlignment="Center" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    这是一个工具程序
+                </TextBlock>
+            </StackPanel>
         </TabItem>
     </TabControl>
     

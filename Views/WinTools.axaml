@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:stcpui.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:WinToolsViewModel"
+             x:Class="stcpui.Views.WinTools">
+    <ScrollViewer>
+        <StackPanel Spacing="20" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+
+            <!-- 定义可重用的样式 -->
+            <StackPanel.Styles>
+                <!-- 卡片容器样式 -->
+                <Style Selector="Border.card">
+                    <Setter Property="Background" Value="#FAFAFA"/>
+                    <Setter Property="BorderBrush" Value="#E0E0E0"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="CornerRadius" Value="8"/>
+                    <Setter Property="Padding" Value="15"/>
+                    <Setter Property="BoxShadow" Value="0 2 4 0 #20000000"/>
+                </Style>
+            </StackPanel.Styles>
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="系统工具" Classes="h1"/>
+                    <WrapPanel ItemSpacing="10" Margin="0 5 0 0">
+                        <Button Classes="card-button" Command="{Binding OpenStartupFolder}">打开启动文件夹</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="control">打开控制面板</Button>
+                        <Button Classes="card-button" Command="{Binding CloseFireWall}">关闭防火墙</Button>
+                        <Button Classes="card-button" Command="{Binding OpenBrowser}" CommandParameter="http://127.0.0.1:8081">打开系统主页</Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+            
+            <!-- 分组1: 常用下载 -->
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <TextBlock Text="常用下载" Classes="h1"/>
+                    <WrapPanel ItemSpacing="10" Margin="0 5 0 0">
+                        <!-- <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://dev.mysql.com/downloads/mysql/">Mysql下载</Button> -->
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://www.bandisoft.com/bandizip/dl.php?web">Bandzip下载</Button>
+                        <!-- <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://aka.ms/vs/17/release/vc_redist.x64.exe">vs2019x64下载</Button> -->
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+            
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
