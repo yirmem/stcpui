@@ -10,7 +10,7 @@ namespace stcpui.Services;
 
 public class Pm2Service
 {
-    public static async Task<string> ExecutePm2CommandAsync(string arguments)
+    public static async Task<string> ExecutePm2CommandAsync(string arguments,string workDir)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -26,6 +26,20 @@ public class Pm2Service
             startInfo.EnvironmentVariables["PATH"] = "/usr/local/bin:" + Environment.GetEnvironmentVariable("PATH");
             startInfo.WorkingDirectory = "/usr/local/bin";
             startInfo.FileName = "/usr/local/bin/pm2";
+            if (workDir != "")
+            {
+                startInfo.EnvironmentVariables["PATH"] = workDir+":" + Environment.GetEnvironmentVariable("PATH");
+                startInfo.WorkingDirectory = workDir;
+                startInfo.FileName = workDir+"/pm2";
+            }
+        }else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            startInfo.WorkingDirectory = @"C:\Users\Sheng\AppData\Roaming\npm";
+            startInfo.FileName = "pm2.cmd";
+            if (workDir != "")
+            {
+                startInfo.WorkingDirectory = workDir;
+            }
         }
         
         using var process = new Process { StartInfo = startInfo };

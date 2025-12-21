@@ -27,6 +27,7 @@
                     <WrapPanel ItemSpacing="10" Margin="0 5 0 0">
                         <Button Classes="card-button" Command="{Binding OpenStartupFolder}">打开启动文件夹</Button>
                         <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="control">打开控制面板</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="netplwiz">打开自动登录设置</Button>
                         <Button Classes="card-button" Command="{Binding CloseFireWall}">关闭防火墙</Button>
                         <Button Classes="card-button" Command="{Binding OpenBrowser}" CommandParameter="http://127.0.0.1:8081">打开系统主页</Button>
                     </WrapPanel>

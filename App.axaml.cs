@@ -6,8 +6,11 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
+using Avalonia.Threading;
 using Dapper;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Events;
 using stcpui.Repository;
 using stcpui.ViewModels;
 using stcpui.Views;
@@ -43,7 +46,13 @@ public partial class App : Application
                 StartAddress TEXT DEFAULT '0000',
                 ReadLength INTEGER DEFAULT 10,
                 CreateTime DATETIME DEFAULT (datetime('now', 'localtime'))
-            )";
+            );
+            CREATE TABLE IF NOT EXISTS Pm2Work (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                WorkDir TEXT DEFAULT '/usr/local/bin',
+                CreateTime DATETIME DEFAULT (datetime('now', 'localtime'))
+            );
+            ";
             connection.Execute(createUserTableSql);
             return connection;
         });
@@ -52,6 +61,7 @@ public partial class App : Application
         serviceCollection.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
         // 注册特定仓储
         serviceCollection.AddScoped<IModbusRepository, ModbusRepository>();
+        serviceCollection.AddScoped<IPm2WorkRepository, Pm2WorkRepository>();
         
         // 注册ViewModel（如果需要由容器创建）
         serviceCollection.AddTransient<MainWindowViewModel>();
@@ -67,6 +77,7 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
+            Log.Information("Application Initialized");
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
@@ -80,6 +91,7 @@ public partial class App : Application
 
         base.OnFrameworkInitializationCompleted();
     }
+
 
     private void DisableAvaloniaDataAnnotationValidation()
     {

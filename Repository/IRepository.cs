@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,9 @@ public class BaseRepository<T> : IRepository<T> where T : class
     public BaseRepository(IDbConnection connection)
     {
         _connection = connection;
-        _tableName = typeof(T).Name;
+        var tableAttr = typeof(T).GetCustomAttributes(typeof(TableAttribute), true).FirstOrDefault() as TableAttribute;
+        _tableName = tableAttr?.Name ?? typeof(T).Name;
+        //_tableName = typeof(T).Name;
     }
 
     // 异步方法实现

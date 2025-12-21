@@ -13,7 +13,7 @@
         <viewModels:Pm2ViewModel/>
     </Design.DataContext>
     
-    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+    <Grid RowDefinitions="Auto,Auto, *, Auto" Margin="20">
         
         <!-- 顶部操作区 -->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
@@ -21,8 +21,17 @@
             <TextBlock Text="{Binding ConsoleOutput}" VerticalAlignment="Center" Foreground="Gray"/>
         </StackPanel>
 
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+            <TextBlock Text="自定义工作目录" VerticalAlignment="Center" Foreground="Gray"/>
+
+            <TextBox Text="{Binding Pm2WorkDir}"
+                     Width="300"
+                     Watermark=""/>
+            <Button Content="保存" Command="{Binding SavePm2WorkDirCommand}" />
+        </StackPanel>
+
         <!-- 中间表格 -->
-        <DataGrid Grid.Row="1"
+        <DataGrid Grid.Row="2"
                   ItemsSource="{Binding Apps}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True"
@@ -65,7 +74,7 @@
         </DataGrid>
 
         <!-- 底部文件选择 -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" Margin="0,15,0,0">
             <!-- 
                 技巧：使用 $parent[TopLevel] 获取当前窗口的顶层引用 
                 这样就可以在 ViewModel 中调用 StorageProvider 而不需要在 CodeBehind 写逻辑

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Win32;
 using stcpui.Services;
 
 namespace stcpui.ViewModels;
@@ -19,6 +20,10 @@ public partial class WinToolsViewModel:ViewModelBase
     [RelayCommand]
     public async Task ExecCmd(string arguments)
     {
+        if (arguments == "netplwiz")
+        {
+            Win32Service.UpdateRegeditValue(@"Microsoft\Windows NT\CurrentVersion\PasswordLess\Device","DevicePasswordLessBuildVersion");
+        }
         var result = await _executor.ExecuteAsync("cmd.exe","/c "+arguments);
     }
     

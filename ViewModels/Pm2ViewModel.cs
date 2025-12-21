@@ -7,7 +7,9 @@ using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Serilog;
 using stcpui.Models;
+using stcpui.Repository;
 using stcpui.Services;
 
 namespace stcpui.ViewModels;
@@ -16,14 +18,18 @@ public partial class Pm2ViewModel:ViewModelBase
 {
     [ObservableProperty]
     private string _consoleOutput = "等待操作...";
+    [ObservableProperty]
+    private string _pm2WorkDir = "";
     [ObservableProperty] private string _selectedFilePath = string.Empty;
     [ObservableProperty] private bool _isPm2Installed = false;
     
     // 表格数据源
     public ObservableCollection<Pm2App> Apps { get; } = new();
+    private readonly IPm2WorkRepository _pm2Repository;
 
-    public Pm2ViewModel()
+    public Pm2ViewModel(IPm2WorkRepository pm2WorkRepository)
     {
+        _pm2Repository = pm2WorkRepository;
         // 初始化时检查环境
         CheckEnvironmentCommand.Execute(null);
     }
@@ -59,14 +65,35 @@ public partial class Pm2ViewModel:ViewModelBase
     }
 
     [RelayCommand]
+    public async Task SavePm2WorkDir()
+    {
+        try
+        {
+            Pm2WorkModel wm = new Pm2WorkModel();
+            wm.Id = 1;
+            wm.WorkDir = Pm2WorkDir;
+            await _pm2Repository.UpSertAsync(wm);
+        }
+        catch (Exception e)
+        {
+            Log.Error(e.Message);
+        }
+    }
+
+    [RelayCommand]
     public async Task RefreshListAsync()
     {
         if (!IsPm2Installed) return;
         Apps.Clear();
+        var pm2WorkList = await _pm2Repository.GetAllAsync();
+        foreach (var wm in pm2WorkList)
+        {
+            Pm2WorkDir = wm.WorkDir;
+        }
         try
         {
             // 执行 pm2 jlist 命令
-            string jsonOutput = await Pm2Service.ExecutePm2CommandAsync("jlist");
+            string jsonOutput = await Pm2Service.ExecutePm2CommandAsync("jlist",Pm2WorkDir);
             if (string.IsNullOrEmpty(jsonOutput))
             {
                 ConsoleOutput = "未能获取PM2进程列表";
@@ -83,6 +110,7 @@ public partial class Pm2ViewModel:ViewModelBase
         }
         catch (Exception ex)
         {
+            Log.Error(ex.Message);
             ConsoleOutput = $"刷新列表时出错: {ex.Message}";
         }
     }
@@ -125,27 +153,27 @@ public partial class Pm2ViewModel:ViewModelBase
     public async Task StopAppAsync(Pm2App app)
     {
         ConsoleOutput = $"正在停止 {app.Name} ...";
-        await Pm2Service.ExecutePm2CommandAsync($"stop {app.Id}");
+        await Pm2Service.ExecutePm2CommandAsync($"stop {app.Id}",Pm2WorkDir);
         await RefreshListAsync();
-        await Pm2Service.ExecutePm2CommandAsync($"save");
+        await Pm2Service.ExecutePm2CommandAsync($"save",Pm2WorkDir);
     }
 
     [RelayCommand]
     public async Task RestartAppAsync(Pm2App app)
     {
         ConsoleOutput = $"正在重启 {app.Name} ...";
-        await Pm2Service.ExecutePm2CommandAsync($"restart {app.Id}");
+        await Pm2Service.ExecutePm2CommandAsync($"restart {app.Id}",Pm2WorkDir);
         await RefreshListAsync();
-        await Pm2Service.ExecutePm2CommandAsync($"save");
+        await Pm2Service.ExecutePm2CommandAsync($"save",Pm2WorkDir);
     }
     
     [RelayCommand]
     public async Task DeleteAppAsync(Pm2App app)
     {
         ConsoleOutput = $"正在删除 {app.Name} ...";
-        await Pm2Service.ExecutePm2CommandAsync($"delete {app.Id}");
+        await Pm2Service.ExecutePm2CommandAsync($"delete {app.Id}",Pm2WorkDir);
         await RefreshListAsync();
-        await Pm2Service.ExecutePm2CommandAsync($"save");
+        await Pm2Service.ExecutePm2CommandAsync($"save",Pm2WorkDir);
     }
 
     // 文件选择命令，接收 TopLevel 参数
@@ -180,9 +208,9 @@ public partial class Pm2ViewModel:ViewModelBase
                 Console.WriteLine($"已选择文件: {SelectedFilePath}"); // 输出到调试窗口
                 // 如果 ConsoleOutput 用于在应用界面显示，可以保留
                 // ConsoleOutput = $"已选择文件: {SelectedFilePath}"; 
-                await Pm2Service.ExecutePm2CommandAsync($"start {SelectedFilePath}");
+                await Pm2Service.ExecutePm2CommandAsync($"start {SelectedFilePath}",Pm2WorkDir);
                 await RefreshListAsync();
-                await Pm2Service.ExecutePm2CommandAsync($"save");
+                await Pm2Service.ExecutePm2CommandAsync($"save",Pm2WorkDir);
             }
             else
             {
