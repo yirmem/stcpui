@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -204,11 +205,13 @@ public partial class Pm2ViewModel:ViewModelBase
                 // 备选方案：通过 Name 属性获取路径[6](@ref)
                 // 在某些特定情况下，如果 LocalPath 不可用，可以尝试以下方法：
                 // SelectedFilePath = selectedFile.Name; // 这可能只返回文件名，而非完整路径
+                var parentFolder = await selectedFile.GetParentAsync();
+                string directoryPath = parentFolder.Path.LocalPath;
 
                 Console.WriteLine($"已选择文件: {SelectedFilePath}"); // 输出到调试窗口
                 // 如果 ConsoleOutput 用于在应用界面显示，可以保留
                 // ConsoleOutput = $"已选择文件: {SelectedFilePath}"; 
-                await Pm2Service.ExecutePm2CommandAsync($"start {SelectedFilePath}",Pm2WorkDir);
+                await Pm2Service.ExecutePm2CommandAsync($"start \"{SelectedFilePath}\" --cwd \"{parentFolder}\"",Pm2WorkDir);
                 await RefreshListAsync();
                 await Pm2Service.ExecutePm2CommandAsync($"save",Pm2WorkDir);
             }

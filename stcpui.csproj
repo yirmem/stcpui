@@ -17,6 +17,8 @@
     <CFBundleDisplayName>STcp</CFBundleDisplayName>
     <!-- 版本号 -->
     <CFBundleVersion>1.0.0</CFBundleVersion>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
