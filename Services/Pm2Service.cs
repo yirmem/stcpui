@@ -34,7 +34,7 @@ public class Pm2Service
             }
         }else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            startInfo.WorkingDirectory = @"C:\Users\Sheng\AppData\Roaming\npm";
+            startInfo.WorkingDirectory = @"C:\Users\Administrator\AppData\Roaming\npm";
             startInfo.FileName = "pm2.cmd";
             if (workDir != "")
             {

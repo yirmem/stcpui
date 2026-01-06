@@ -38,6 +38,11 @@ public partial class Pm2ViewModel:ViewModelBase
     [RelayCommand]
     public async Task CheckEnvironmentAsync()
     {
+        var pm2WorkList = await _pm2Repository.GetAllAsync();
+        foreach (var wm in pm2WorkList)
+        {
+            Pm2WorkDir = wm.WorkDir;
+        }
         try
         {
             ConsoleOutput = "正在检查 Node 和 PM2 环境...";
