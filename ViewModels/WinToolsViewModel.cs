@@ -64,6 +64,10 @@ public partial class WinToolsViewModel:ViewModelBase
     [RelayCommand]
     public void OpenBrowser(string url)
     {
+        if (url.Equals("notepad3"))
+        {
+            url = "https://rizonesoft.com/?gdm_process_download=1&download_id=18312";
+        }
         Process.Start(new ProcessStartInfo(url)
         {
             UseShellExecute = true

@@ -42,7 +42,7 @@
                         <!-- <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://dev.mysql.com/downloads/mysql/">Mysql下载</Button> -->
                         <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://www.bandisoft.com/bandizip/dl.php?web">Bandzip下载</Button>
                         <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://aka.ms/vs/17/release/vc_redist.x64.exe">vcx64下载</Button>
-                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://rizonesoft.com/?gdm_process_download=1&download_id=18312">notepad3</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="notepad3">notepad3</Button>
                     </WrapPanel>
                 </StackPanel>
             </Border>

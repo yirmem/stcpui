@@ -36,7 +36,7 @@
             <local:WinTools></local:WinTools>
         </TabItem>
         <TabItem Header="TcpClient">
-            <TextBlock Margin="5" Text="TcpClient待开发" />
+            <local:TcpClient></local:TcpClient>
         </TabItem>
         <TabItem Header="关于">
             <StackPanel>

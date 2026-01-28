@@ -47,6 +47,14 @@ public partial class App : Application
                 ReadLength INTEGER DEFAULT 10,
                 CreateTime DATETIME DEFAULT (datetime('now', 'localtime'))
             );
+            CREATE TABLE IF NOT EXISTS TcpClient (
+                Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                Ip TEXT DEFAULT '127.0.0.1',
+                Port INTEGER DEFAULT 8880,
+                SendType INTEGER DEFAULT 1,
+                RecvType INTEGER DEFAULT 1,
+                CreateTime DATETIME DEFAULT (datetime('now', 'localtime'))
+            );
             CREATE TABLE IF NOT EXISTS Pm2Work (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
                 WorkDir TEXT DEFAULT '/usr/local/bin',
@@ -62,11 +70,13 @@ public partial class App : Application
         // 注册特定仓储
         serviceCollection.AddScoped<IModbusRepository, ModbusRepository>();
         serviceCollection.AddScoped<IPm2WorkRepository, Pm2WorkRepository>();
+        serviceCollection.AddScoped<ITcpClientRepository, TcpClientRepository>();
         
         // 注册ViewModel（如果需要由容器创建）
         serviceCollection.AddTransient<MainWindowViewModel>();
         serviceCollection.AddTransient<ModbusClientViewModel>();
         serviceCollection.AddTransient<Pm2ViewModel>();
+        serviceCollection.AddTransient<TcpClientViewModel>();
         serviceCollection.AddTransient<WinToolsViewModel>();
         // 构建ServiceProvider
         Services = serviceCollection.BuildServiceProvider();

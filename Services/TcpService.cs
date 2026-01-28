@@ -106,7 +106,7 @@ public class TcpService
 
             // 直接使用NetworkStream发送字节数组[1,7](@ref)
             await _networkStream.WriteAsync(sendData, 0, sendData.Length);
-            return "SendSuccess";
+            return "发送成功";
         }
         catch (Exception ex)
         {
