@@ -9,7 +9,7 @@ namespace stcpui.Repository;
 
 public interface IRepository<T>
 {
-    Task<T> GetByIdAsync(int id);
+    Task<T> GetByIdAsync(long id);
     Task<IEnumerable<T>> GetAllAsync();
     Task<int> InsertAsync(T entity);
     Task<bool> UpdateAsync(T entity);
@@ -30,7 +30,7 @@ public class BaseRepository<T> : IRepository<T> where T : class
     }
 
     // 异步方法实现
-    public async Task<T> GetByIdAsync(int id)
+    public async Task<T> GetByIdAsync(long id)
     {
         var sql = $"SELECT * FROM {_tableName} WHERE Id = @Id";
         return await _connection.QueryFirstOrDefaultAsync<T>(sql, new { Id = id });

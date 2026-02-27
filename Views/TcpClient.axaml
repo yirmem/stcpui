@@ -25,11 +25,17 @@
                 Margin="0,0,10,0">
             <!-- 您原有的StackPanel和所有输入控件完全保持不变 -->
             <StackPanel Margin="15" Spacing="12">
+                <StackPanel>
+                    <TextBlock Text="Ip列表" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <ComboBox ItemsSource="{Binding IpItems}" SelectedItem="{Binding IpAddress}" />
+                </StackPanel>
+                
                 <!-- IP地址输入 -->
                 <StackPanel>
                     <TextBlock Text="IP地址" FontWeight="SemiBold" Margin="0,0,0,4"/>
                     <TextBox Watermark="例如：192.168.1.100" 
                              Text="{Binding IpAddress}"/>
+                    <!-- <ComboBox ItemsSource="{Binding IpItems}" SelectedItem="{Binding IpAddress}" /> -->
                 </StackPanel>
                 
                 <!-- 端口输入 -->
@@ -42,7 +48,7 @@
                 <!-- 按钮区域 -->
                 <Grid Margin="0,20,0,0" ColumnDefinitions="*,10,*">
                     <Button Grid.Column="0" 
-                            Content="连接" 
+                            Content="{Binding ConnectBtnText}" 
                             Command="{Binding ToggleConnectionAsync}"
                             Classes="primary"/>
                     

@@ -34,6 +34,12 @@ public partial class TcpClientViewModel:ViewModelBase
     private string _connectStatus = "未连接";
     
     [ObservableProperty]
+    private ObservableCollection<string> _ipItems = new ObservableCollection<string>();
+
+    [ObservableProperty]
+    private string _connectBtnText = "连接";
+    
+    [ObservableProperty]
     private string _statusMessage = "等待消息";
     
     [ObservableProperty]
@@ -72,11 +78,13 @@ public partial class TcpClientViewModel:ViewModelBase
     [RelayCommand]
     private async Task LoadDataAsync()
     {
+        IpItems = new ObservableCollection<string>();
         var tcpList = await _tcpClientRepository.GetAllAsync();
         foreach (var tcpItem in tcpList)
         {
             IpAddress =  tcpItem.Ip;
             Port =  tcpItem.Port;
+            IpItems.Add(IpAddress);
             _Id = tcpItem.Id;
             SendType = Convert.ToBoolean(tcpItem.SendType);
             RecvType = Convert.ToBoolean(tcpItem.RecvType);
@@ -95,23 +103,26 @@ public partial class TcpClientViewModel:ViewModelBase
             TcpClientModel mc = new TcpClientModel();
             mc.Ip = IpAddress;
             mc.Port = Port;
-            if (_Id != 0)
+            
+            var tcpModel = await _tcpClientRepository.GetByIdAsync(_Id);
+            if (tcpModel.Ip == mc.Ip)
             {
                 mc.Id = _Id;
-                await _tcpClientRepository.UpdateAsync(mc);
             }
-            else
-            {
-                await _tcpClientRepository.InsertAsync(mc);
-            }
+            
+            await _tcpClientRepository.UpSertAsync(mc);
             ConnectStatus = "正在连接...";
             var success = await _tcpService.ConnectAsync(IpAddress, Port);
+            ConnectBtnText = "断开";
             // 连接结果会通过ConnectionStatusChanged事件更新IsConnected和StatusMessage
             if (!success)
             {
-                ConnectStatus = "连接失败，请检查地址、端口及服务端状态";
+                ConnectStatus = "连接失败";
+                ConnectBtnText = "连接";
             }
-            
+
+            LoadDataAsync();
+
         }
         
     }
@@ -143,6 +154,7 @@ public partial class TcpClientViewModel:ViewModelBase
     {
         IsConnected = isConnected;
         ConnectStatus = isConnected ? "已连接" : "已断开";
+        ConnectBtnText = isConnected ? "断开" : "连接";
     }
 
     private void OnTcpServiceDataReceived(object sender, byte[] data)

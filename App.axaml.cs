@@ -49,7 +49,7 @@ public partial class App : Application
             );
             CREATE TABLE IF NOT EXISTS TcpClient (
                 Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                Ip TEXT DEFAULT '127.0.0.1',
+                Ip TEXT DEFAULT '127.0.0.1' UNIQUE,
                 Port INTEGER DEFAULT 8880,
                 SendType INTEGER DEFAULT 1,
                 RecvType INTEGER DEFAULT 1,
