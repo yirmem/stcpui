@@ -16,4 +16,11 @@ public class TcpClientModel
     public int RecvType { get; set; } = 1; //接收消息类型 0 false 字符串 ｜ 1 true hex
     
     public DateTime CreateTime { get; set; }
+
+    public string ToString()
+    {
+        return $"Id:{Id},Ip:{Ip},Port:{Port},SendType:{SendType},RecvType:{RecvType},CreateTime:{CreateTime}";
+    }
+    
+    
 }

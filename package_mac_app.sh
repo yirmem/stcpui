@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf "bin/Release/net9.0/osx-arm64/publish"
+rm -rf "bin/Release/net10.0/osx-arm64/publish"
 
 dotnet publish -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true
 
@@ -12,7 +12,7 @@ APP_NAME="Stcp"                    # 应用名称（.app文件名）
 EXECUTABLE_NAME="stcpui"             # 可执行文件名称（与项目输出一致）
 BUNDLE_ID="com.bin.stcpui"  # 应用标识符
 VERSION="1.0.0"                      # 应用版本
-PUBLISH_DIR="bin/Release/net9.0/osx-arm64/publish"  # 发布目录
+PUBLISH_DIR="bin/Release/net10.0/osx-arm64/publish"  # 发布目录
 APP_DIR="${APP_NAME}.app"            # 输出的 .app 目录
 ICON_SOURCE="Assets/AppIcon.icns"    # 图标源文件
 
@@ -90,7 +90,7 @@ cat > "$APP_DIR/Contents/Info.plist" << EOF
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright © 2025 Your Company. All rights reserved.</string>
+    <string>Copyright © 2026 Company. All rights reserved.</string>
     <key>CFBundleIconFile</key>
     <string>AppIcon.icns</string>
 </dict>

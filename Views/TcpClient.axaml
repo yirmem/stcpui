@@ -27,7 +27,10 @@
             <StackPanel Margin="15" Spacing="12">
                 <StackPanel>
                     <TextBlock Text="Ip列表" FontWeight="SemiBold" Margin="0,0,0,4"/>
-                    <ComboBox ItemsSource="{Binding IpItems}" SelectedItem="{Binding IpAddress}" />
+                    <ComboBox ItemsSource="{Binding IpItems}" 
+                              SelectedItem="{Binding IpAddress}">
+                    </ComboBox>
+                    
                 </StackPanel>
                 
                 <!-- IP地址输入 -->

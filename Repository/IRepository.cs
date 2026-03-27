@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -44,33 +46,50 @@ public class BaseRepository<T> : IRepository<T> where T : class
 
     public async Task<int> InsertAsync(T entity)
     {
-        // 动态构建插入语句
-        var properties = typeof(T).GetProperties()
-            .Where(p => p.Name != "Id" && p.CanWrite);
+        try
+        {
+            // 动态构建插入语句
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.Name != "Id" && p.CanWrite);
         
-        var columnNames = properties.Select(p => p.Name);
-        var parameterNames = properties.Select(p => "@" + p.Name);
+            var columnNames = properties.Select(p => p.Name);
+            var parameterNames = properties.Select(p => "@" + p.Name);
         
-        var sql = $"INSERT INTO {_tableName} ({string.Join(", ", columnNames)}) " +
-                 $"VALUES ({string.Join(", ", parameterNames)}); " +
-                 "SELECT last_insert_rowid();";
+            var sql = $"INSERT INTO {_tableName} ({string.Join(", ", columnNames)}) " +
+                      $"VALUES ({string.Join(", ", parameterNames)}); " +
+                      "SELECT last_insert_rowid();";
         
-        return await _connection.ExecuteScalarAsync<int>(sql, entity);
+            return await _connection.ExecuteScalarAsync<int>(sql, entity);
+        }catch (Exception ex)
+        {
+            string appDir = AppContext.BaseDirectory;
+            File.AppendAllText(appDir+"debug.log", $"更新失败：{entity.ToString()},{ex.Message}\n");
+        }
+
+        return 0;
     }
 
     public async Task<bool> UpdateAsync(T entity)
     {
-        // 动态构建更新语句
-        var properties = typeof(T).GetProperties()
-            .Where(p => p.Name != "Id" && p.CanWrite);
+        try
+        {
+            // 动态构建更新语句
+            var properties = typeof(T).GetProperties()
+                .Where(p => p.Name != "Id" && p.CanWrite);
         
-        var setClause = string.Join(", ", 
-            properties.Select(p => $"{p.Name} = @{p.Name}"));
+            var setClause = string.Join(", ", 
+                properties.Select(p => $"{p.Name} = @{p.Name}"));
         
-        var sql = $"UPDATE {_tableName} SET {setClause} WHERE Id = @Id";
+            var sql = $"UPDATE {_tableName} SET {setClause} WHERE Id = @Id";
         
-        var affectedRows = await _connection.ExecuteAsync(sql, entity);
-        return affectedRows > 0;
+            var affectedRows = await _connection.ExecuteAsync(sql, entity);
+            return affectedRows > 0;
+        }catch (Exception ex)
+        {
+            string appDir = AppContext.BaseDirectory;
+            File.AppendAllText(appDir+"debug.log", $"更新失败：{entity.ToString()},{ex.Message}\n");
+        }
+        return false;
     }
 
     public async Task<int> UpSertAsync(T entity)
@@ -80,7 +99,7 @@ public class BaseRepository<T> : IRepository<T> where T : class
         {
             return 1;
         }
-    
+
         // 如果更新失败（记录不存在），则插入
         return await InsertAsync(entity);
     }

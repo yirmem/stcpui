@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,21 +80,29 @@ public partial class TcpClientViewModel:ViewModelBase
     private async Task LoadDataAsync()
     {
         IpItems = new ObservableCollection<string>();
+        ReloadIpItems();
+        if (IpItems.Count != 0)
+        {
+            IpAddress = IpItems[0];
+        }
+    }
+
+    private async void ReloadIpItems()
+    {
+        string tempIp = IpAddress;
+        IpItems.Clear();
         var tcpList = await _tcpClientRepository.GetAllAsync();
         foreach (var tcpItem in tcpList)
         {
-            IpAddress =  tcpItem.Ip;
-            Port =  tcpItem.Port;
-            IpItems.Add(IpAddress);
-            _Id = tcpItem.Id;
-            SendType = Convert.ToBoolean(tcpItem.SendType);
-            RecvType = Convert.ToBoolean(tcpItem.RecvType);
+            IpItems.Add(tcpItem.Ip);
         }
+        IpAddress = tempIp;
     }
     
     [RelayCommand]
     public async Task ToggleConnectionAsync()
     {
+        string appDir = AppContext.BaseDirectory;
         if (IsConnected)
         {
             _tcpService.Disconnect();
@@ -103,13 +112,11 @@ public partial class TcpClientViewModel:ViewModelBase
             TcpClientModel mc = new TcpClientModel();
             mc.Ip = IpAddress;
             mc.Port = Port;
-            
-            var tcpModel = await _tcpClientRepository.GetByIdAsync(_Id);
-            if (tcpModel != null && tcpModel.Ip == mc.Ip)
+            var tcpModel = await _tcpClientRepository.GetByIpAsync(IpAddress);
+            if (tcpModel != null && tcpModel.Id != 0)
             {
-                mc.Id = _Id;
+                mc.Id = tcpModel.Id;
             }
-            
             await _tcpClientRepository.UpSertAsync(mc);
             ConnectStatus = "正在连接...";
             var success = await _tcpService.ConnectAsync(IpAddress, Port);
@@ -120,9 +127,7 @@ public partial class TcpClientViewModel:ViewModelBase
                 ConnectStatus = "连接失败";
                 ConnectBtnText = "连接";
             }
-
-            LoadDataAsync();
-
+            ReloadIpItems();
         }
         
     }
