@@ -62,6 +62,7 @@ public class TcpService
         catch (Exception ex)
         {
             // 可以记录日志 ex.Message
+            Console.WriteLine(ex.Message);
             Disconnect();
             OnConnectionStatusChanged(false);
             return false;

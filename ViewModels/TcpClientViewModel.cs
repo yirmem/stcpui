@@ -105,7 +105,7 @@ public partial class TcpClientViewModel:ViewModelBase
             mc.Port = Port;
             
             var tcpModel = await _tcpClientRepository.GetByIdAsync(_Id);
-            if (tcpModel.Ip == mc.Ip)
+            if (tcpModel != null && tcpModel.Ip == mc.Ip)
             {
                 mc.Id = _Id;
             }
