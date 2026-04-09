@@ -141,7 +141,7 @@
                 BorderBrush="#BBDEFB" 
                 BorderThickness="1,1,0,0"
                 Padding="10,6"
-                IsVisible="{Binding StatusMessage, Converter={StaticResource StringIsNotNullOrEmptyConverter}}">
+                IsVisible="{CompiledBinding StatusMessage, Converter={StaticResource StringIsNotNullOrEmptyConverter}}">
         
             <Grid ColumnDefinitions="Auto,*">
                 <!-- 修正后的PathIcon -->

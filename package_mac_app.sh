@@ -2,7 +2,7 @@
 
 rm -rf "bin/Release/net10.0/osx-arm64/publish"
 
-dotnet publish -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true
+dotnet publish -c Release -r osx-arm64 --self-contained true -p:PublishSingleFile=true -p:DebugSymbols=false -p:DebugType=none
 
 # Avalonia macOS 应用打包脚本
 # 使用方法：在项目根目录运行 ./package_mac_app.sh
@@ -11,7 +11,7 @@ dotnet publish -c Release -r osx-arm64 --self-contained true -p:PublishSingleFil
 APP_NAME="Stcp"                    # 应用名称（.app文件名）
 EXECUTABLE_NAME="stcpui"             # 可执行文件名称（与项目输出一致）
 BUNDLE_ID="com.bin.stcpui"  # 应用标识符
-VERSION="1.0.0"                      # 应用版本
+VERSION="1.0.1"                      # 应用版本
 PUBLISH_DIR="bin/Release/net10.0/osx-arm64/publish"  # 发布目录
 APP_DIR="${APP_NAME}.app"            # 输出的 .app 目录
 ICON_SOURCE="Assets/AppIcon.icns"    # 图标源文件
@@ -46,6 +46,7 @@ mkdir -p "$APP_DIR/Contents/Resources"
 # 复制所有发布文件到 MacOS 目录
 echo "复制文件到应用程序包..."
 cp -R "$PUBLISH_DIR"/* "$APP_DIR/Contents/MacOS/"
+rm -rf "$APP_DIR/Contents/MacOS/*.dsym"
 
 # 设置可执行文件权限
 chmod +x "$APP_DIR/Contents/MacOS/$EXECUTABLE_NAME"
