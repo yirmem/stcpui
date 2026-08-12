@@ -1,0 +1,233 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:stcpui.ViewModels"
+             xmlns:converters="clr-namespace:stcpui.Converters"
+             x:DataType="viewModels:TcpServerViewModel"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="560"
+             x:Class="stcpui.Views.TcpServer">
+
+    <UserControl.Resources>
+        <converters:StringIsNotNullOrEmptyConverter x:Key="StringIsNotNullOrEmptyConverter"/>
+        <converters:BoolToStatusBrushConverter x:Key="BoolToStatusBrushConverter"/>
+    </UserControl.Resources>
+
+    <Grid RowDefinitions="*,96,Auto" ColumnDefinitions="260,*" Margin="10">
+
+        <!-- ============ 左侧：服务配置 + 客户端列表 ============ -->
+        <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="2"
+                Background="#F7F9FC"
+                BorderBrush="#E3E8EF"
+                BorderThickness="1"
+                CornerRadius="8"
+                BoxShadow="0 2 6 0 #14000000"
+                Margin="0,0,10,0">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <!-- 服务配置 -->
+                <StackPanel Grid.Row="0" Margin="15" Spacing="12">
+                    <StackPanel>
+                        <TextBlock Text="TCP Server 服务配置" FontWeight="SemiBold" FontSize="14" Foreground="#1F2937" Margin="0,0,0,4"/>
+                    </StackPanel>
+
+                    <!-- 监听端口 -->
+                    <StackPanel>
+                        <TextBlock Text="监听端口" FontWeight="SemiBold" FontSize="12" Foreground="#374151" Margin="0,0,0,4"/>
+                        <TextBox Watermark="例如：8880" Text="{Binding Port}" FontFamily="Consolas, Courier New" MinWidth="120"/>
+                    </StackPanel>
+
+                    <!-- 启动按钮 -->
+                    <Button Content="{Binding StartBtnText}"
+                            Command="{Binding ToggleServerCommand}"
+                            Classes="primary"/>
+
+                    <!-- 运行状态 -->
+                    <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="6" Padding="10,8">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Ellipse Grid.Column="0" Width="10" Height="10" Margin="0,0,8,0" VerticalAlignment="Center"
+                                     Fill="{Binding IsRunning, Converter={StaticResource BoolToStatusBrushConverter}}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding ServerStatus}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#374151"/>
+                            <TextBlock Grid.Column="2" FontSize="11" Foreground="#9CA3AF" VerticalAlignment="Center"
+                                       Text="{Binding ClientCount, StringFormat='客户端: {0}'}"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+
+                <!-- 已连接客户端列表 -->
+                <DockPanel Grid.Row="1" Margin="15,8">
+                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBlock Text="已连接客户端" FontWeight="SemiBold" FontSize="13" Foreground="#1F2937"/>
+                        <TextBlock Text="{Binding ClientCount, StringFormat='  ({0})'}" FontSize="12" Foreground="#9CA3AF" VerticalAlignment="Bottom"/>
+                    </StackPanel>
+
+                    <Border Background="#FFFFFF" BorderBrush="#E5E7EB" BorderThickness="1" CornerRadius="6" Padding="6">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding ClientList}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border CornerRadius="4" Padding="8,6" Margin="0,2"
+                                                Background="Transparent">
+                                            <Grid ColumnDefinitions="Auto,*">
+                                                <Ellipse Grid.Column="0" Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center"
+                                                         Fill="#28A745"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding}"
+                                                           FontFamily="Consolas, Courier New" FontSize="12" Foreground="#1F2937"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
+                </DockPanel>
+
+                <!-- 底部提示 -->
+                <Border Grid.Row="2" Margin="15,8,15,15" Background="#FFF7E6" BorderBrush="#FFE0B3" BorderThickness="1" CornerRadius="6" Padding="10,8">
+                    <TextBlock FontSize="11" Foreground="#B45309" TextWrapping="Wrap"
+                               Text="启动服务后，在局域网内通过 IP:端口 即可连接。"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ============ 右侧：消息记录 ============ -->
+        <Border Grid.Row="0" Grid.Column="1"
+                Background="#FFFFFF"
+                BorderBrush="#E3E8EF"
+                BorderThickness="1"
+                CornerRadius="8"
+                BoxShadow="0 2 6 0 #14000000">
+            <ScrollViewer VerticalScrollBarVisibility="Auto" x:Name="MessageScrollViewer">
+                <ItemsControl ItemsSource="{Binding DataResults}" Margin="10">
+                    <ItemsControl.Resources>
+                        <converters:AuthorToAlignmentConverter x:Key="AuthorToAlignmentConverter"/>
+                        <converters:AuthorToBackgroundConverter x:Key="AuthorToBackgroundConverter"/>
+                        <converters:AuthorToForegroundConverter x:Key="AuthorToForegroundConverter"/>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border HorizontalAlignment="{Binding Author, Converter={StaticResource AuthorToAlignmentConverter}}"
+                                    Margin="0,8">
+                                <Border Background="{Binding Author, Converter={StaticResource AuthorToBackgroundConverter}}"
+                                        CornerRadius="12" Padding="12">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- 第一行：时间和作者 -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,4">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding Time}" FontSize="10"
+                                                       Foreground="{Binding Author, Converter={StaticResource AuthorToForegroundConverter}}"
+                                                       Opacity="0.7"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Author}" FontSize="10"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="{Binding Author, Converter={StaticResource AuthorToForegroundConverter}}"
+                                                       Opacity="0.9"/>
+                                        </Grid>
+
+                                        <!-- 第二行：内容 -->
+                                        <TextBlock Grid.Row="1" Text="{Binding Content}"
+                                                   TextWrapping="Wrap" FontSize="12" FontWeight="Medium"
+                                                   FontFamily="Consolas, Courier New"
+                                                   Foreground="{Binding Author, Converter={StaticResource AuthorToForegroundConverter}}"/>
+                                    </Grid>
+                                </Border>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ============ 右侧：发送区域 ============ -->
+        <Border Grid.Row="1" Grid.Column="1"
+                Background="#FFFFFF"
+                BorderBrush="#E3E8EF"
+                BorderThickness="1"
+                CornerRadius="8"
+                Margin="0,10,0,0">
+            <Grid RowDefinitions="30,*" ColumnDefinitions="Auto,*,110">
+                <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="10,2,10,4" Spacing="8">
+                    <TextBlock Text="目标:" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="#374151"/>
+                    <ComboBox ItemsSource="{Binding SendTargets}"
+                              SelectedItem="{Binding SelectedClient}"
+                              MinWidth="180" VerticalAlignment="Center"/>
+                    <TextBlock Text="发送:" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="#374151"/>
+                    <CheckBox IsChecked="{Binding SendType}" VerticalAlignment="Center">Hex</CheckBox>
+                    <TextBlock Text="接收:" VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold" Foreground="#374151"/>
+                    <CheckBox IsChecked="{Binding RecvType}" VerticalAlignment="Center">Hex</CheckBox>
+                </StackPanel>
+
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Watermark="输入要发送的数据（Hex 以空格分隔，如: 01 03 00 00 00 02）"
+                         FontFamily="Consolas, Courier New" FontSize="12" FontWeight="Bold"
+                         Text="{Binding SendMessage}" AcceptsReturn="False"/>
+
+                <Button Grid.Row="1" Grid.Column="2"
+                        Content="发送"
+                        Command="{Binding SendDataCommand}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Margin="10,0,0,0"
+                        Classes="success"/>
+            </Grid>
+        </Border>
+
+        <!-- ============ 底部：状态提示 ============ -->
+        <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                Background="#E3F2FD"
+                BorderBrush="#BBDEFB"
+                BorderThickness="1,1,0,0"
+                Padding="10,6"
+                Margin="0,10,0,0"
+                IsVisible="{Binding StatusMessage, Converter={StaticResource StringIsNotNullOrEmptyConverter}}">
+            <TextBlock Text="{Binding StatusMessage}" VerticalAlignment="Center"
+                       FontSize="12" TextWrapping="Wrap" Foreground="#1565C0"/>
+        </Border>
+    </Grid>
+
+    <UserControl.Styles>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="Button.success">
+            <Setter Property="Background" Value="#28A745"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="TextBox">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="CornerRadius" Value="4"/>
+        </Style>
+
+        <Style Selector="CheckBox">
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+    </UserControl.Styles>
+
+</UserControl>

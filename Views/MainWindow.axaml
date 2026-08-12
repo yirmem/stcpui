@@ -14,49 +14,36 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
     
-    <TabbedPage TabPlacement="Bottom">
-        <ContentPage Header="TcpClient">
-            <local:TcpClient></local:TcpClient>
-        </ContentPage>
-        <ContentPage Header="Pm2管理">
-            <local:Pm2></local:Pm2>
-        </ContentPage>
-        <ContentPage Header="ModbusClient">
-            <local:ModbusClient></local:ModbusClient>
-        </ContentPage>
-        <ContentPage Header="Win工具">
-            <local:WinTools></local:WinTools>
-        </ContentPage>
-        <ContentPage Header="关于">
-            <StackPanel>
-                <TextBlock TextAlignment="Center" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    这是一个工具程序
-                </TextBlock>
-            </StackPanel>
-        </ContentPage>
-    </TabbedPage>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="STcp">
+                <MenuItem Header="设置"/>
+            </MenuItem>
+        </Menu>
+        <TabbedPage TabPlacement="Bottom">
+            <ContentPage Header="TcpClient">
+                <local:TcpClient></local:TcpClient>
+            </ContentPage>
+            <ContentPage Header="TcpServer">
+                <local:TcpServer></local:TcpServer>
+            </ContentPage>
+            <ContentPage Header="Pm2管理">
+                <local:Pm2></local:Pm2>
+            </ContentPage>
+            <ContentPage Header="ModbusClient">
+                <local:ModbusClient></local:ModbusClient>
+            </ContentPage>
+            <ContentPage Header="Win工具">
+                <local:WinTools></local:WinTools>
+            </ContentPage>
+            <ContentPage Header="关于">
+                <StackPanel>
+                    <TextBlock TextAlignment="Center" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        这是一个工具程序
+                    </TextBlock>
+                </StackPanel>
+            </ContentPage>
+        </TabbedPage>
+    </DockPanel>
     
-    <!-- <TabControl Margin="5"> -->
-    <!--     <TabItem Header="Pm2管理" > -->
-    <!--         <local:Pm2></local:Pm2> -->
-    <!--     </TabItem> -->
-    <!--     <TabItem Header="ModbusClient"> -->
-    <!--         <local:ModbusClient></local:ModbusClient> -->
-    <!--     </TabItem> -->
-    <!--     <TabItem Header="Win工具"> -->
-    <!--         <local:WinTools></local:WinTools> -->
-    <!--     </TabItem> -->
-    <!--     <TabItem Header="TcpClient"> -->
-    <!--         <local:TcpClient></local:TcpClient> -->
-    <!--     </TabItem> -->
-    <!--     <TabItem Header="关于"> -->
-    <!--         <StackPanel> -->
-    <!--             <TextBlock TextAlignment="Center" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"> -->
-    <!--                 这是一个工具程序 -->
-    <!--             </TextBlock> -->
-    <!--         </StackPanel> -->
-    <!--     </TabItem> -->
-    <!-- </TabControl> -->
-    
-
 </Window>

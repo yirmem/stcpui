@@ -77,6 +77,7 @@ public partial class App : Application
         serviceCollection.AddTransient<ModbusClientViewModel>();
         serviceCollection.AddTransient<Pm2ViewModel>();
         serviceCollection.AddTransient<TcpClientViewModel>();
+        serviceCollection.AddTransient<TcpServerViewModel>();
         serviceCollection.AddTransient<WinToolsViewModel>();
         // 构建ServiceProvider
         Services = serviceCollection.BuildServiceProvider();
