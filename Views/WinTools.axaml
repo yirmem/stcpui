@@ -20,15 +20,24 @@
                     <Setter Property="Padding" Value="15"/>
                     <Setter Property="BoxShadow" Value="0 2 4 0 #20000000"/>
                 </Style>
+                <Style Selector="Button.card-button">
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="FontWeight" Value="SemiBold"/>
+                </Style>
             </StackPanel.Styles>
             <Border Classes="card">
                 <StackPanel Spacing="10">
                     <TextBlock Text="系统工具" Classes="h1"/>
-                    <WrapPanel ItemSpacing="10" Margin="0 5 0 0">
-                        <Button Classes="card-button" Command="{Binding OpenStartupFolder}">打开启动文件夹</Button>
-                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="control">打开控制面板</Button>
-                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="netplwiz">打开自动登录设置</Button>
+                    <WrapPanel ItemSpacing="10" Margin="5 5 5 5">
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="compmgmt.msc">计算机管理</Button>
                         <Button Classes="card-button" Command="{Binding CloseFireWall}">关闭防火墙</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="sysdm.cpl">系统环境变量</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="taskschd.msc">任务计划程序</Button>
+                        <Button Classes="card-button" Command="{Binding OpenStartupFolder}">启动文件夹</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="control">控制面板</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="netplwiz">自动登录设置</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="cmd">CMD</Button>
+                        <Button Classes="card-button" Command="{Binding ExecCmd}" CommandParameter="powershell">PowerShell</Button>
                         <Button Classes="card-button" Command="{Binding OpenBrowser}" CommandParameter="http://127.0.0.1:8081">打开系统主页</Button>
                     </WrapPanel>
                 </StackPanel>
@@ -39,10 +48,14 @@
                 <StackPanel Spacing="10">
                     <TextBlock Text="常用下载" Classes="h1"/>
                     <WrapPanel ItemSpacing="10" Margin="0 5 0 0">
-                        <!-- <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://dev.mysql.com/downloads/mysql/">Mysql下载</Button> -->
-                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://www.bandisoft.com/bandizip/dl.php?web">Bandzip下载</Button>
-                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://aka.ms/vs/17/release/vc_redist.x64.exe">vcx64下载</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://dev.mysql.com/downloads/mysql/">Mysql</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://aka.ms/vs/17/release/vc_redist.x64.exe">vc</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://www.bandisoft.com/bandizip/dl.php?web">Bandzip</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://aka.ms/vs/17/release/vc_redist.x64.exe">vcx64</Button>
                         <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="notepad3">notepad3</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://nodejs.org/zh-cn/download">node</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://nginx.org/en/download.html">nginx</Button>
+                        <Button Classes="card-button" Command="{Binding  OpenBrowser}" CommandParameter="https://www.taosdata.com/assets-download/3.0/TDengine-server-3.0.7.1-Windows-x64.exe">taos</Button>
                     </WrapPanel>
                 </StackPanel>
             </Border>

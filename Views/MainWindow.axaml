@@ -15,11 +15,11 @@
     </Design.DataContext>
     
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="STcp">
-                <MenuItem Header="设置"/>
-            </MenuItem>
-        </Menu>
+        <!-- <Menu DockPanel.Dock="Top"> -->
+        <!--     <MenuItem Header="STcp"> -->
+        <!--         <MenuItem Header="设置"/> -->
+        <!--     </MenuItem> -->
+        <!-- </Menu> -->
         <TabbedPage TabPlacement="Bottom">
             <ContentPage Header="TcpClient">
                 <local:TcpClient></local:TcpClient>
@@ -39,7 +39,7 @@
             <ContentPage Header="关于">
                 <StackPanel>
                     <TextBlock TextAlignment="Center" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        这是一个工具程序
+                        版本：26.9.7
                     </TextBlock>
                 </StackPanel>
             </ContentPage>
